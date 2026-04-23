@@ -35,6 +35,7 @@ class Job(Base):
     jobid = Column(String, unique=True, nullable= False, default= lambda: str(uuid.uuid4()))
     userid = Column(String, nullable= True)
     s3_file_url = Column(Text, nullable=False)
+    original_filename = Column(String(255), nullable= True)
     s3_lyrics_url = Column(Text, nullable= True)
     status = Column(String(50), default= "pending")
     retry_count = Column(Integer, default=0)

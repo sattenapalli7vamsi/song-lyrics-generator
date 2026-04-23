@@ -8,6 +8,8 @@ ACCOUSTID_API_KEY = os.getenv("ACCOUSTID_API_KEY", "local")
 
 def generate_vocalprint(file_path: str) -> str:
     duration, vocalprint = acoustid.fingerprint_file(file_path)
+    if isinstance(vocalprint, bytes):
+        return vocalprint.decode('utf-8')
     return vocalprint
 
 def save_audio_temp(file_bytes: bytes, filename: str) ->str:
