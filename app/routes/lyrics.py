@@ -4,6 +4,7 @@ from app.services.storage import upload_file, generate_presigned_url, get_s3_key
 from app.services.vocalprint import generate_vocalprint, save_audio_temp, cleanup_temp
 from app.services.cache import exists_vocalprint, save_vocalprint, set_lock
 from app.services.database import get_db, User, Job, Song
+from app.services.queue import push_to_queue
 from app.models.schemas import UploadResponse, SongItem
 from datetime import datetime, timezone
 import uuid
@@ -85,10 +86,16 @@ async def upload_audio(
             cache_hit = False,
             original_filename = file.filename
         )
-
         db.add(job)
         db.commit()
 
+        #Push to SQS
+        push_to_queue(
+            jobid =  job_id,
+            s3_file_url = s3_key,
+            useremail = email,
+            original_filename = file.filename
+        )
         return UploadResponse(
             status = "processing",
             message = f"Lyrics will be emailed to you at {email} once ready"
