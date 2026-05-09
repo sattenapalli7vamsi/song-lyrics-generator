@@ -33,6 +33,7 @@ def download_file(s3_key: str) -> bytes:
         Bucket = S3_BUCKET_NAME,
         Key = s3_key
     )
+    return response["Body"].read()
 
 def generate_presigned_url(s3_key: str, expiry: int = 86400) -> str:
     url = s3_client.generate_presigned_url(
